@@ -166,7 +166,6 @@ export const getAllEntries = async (status = null, filterParams = {}) => {
 const fetchTodayEntries = async (status, filterParams, applyDateFilter) => {
   const orderBy = getSettings("orderBy")
   const pageSize = getSettings("pageSize")
-  const showHiddenFeeds = getSettings("showHiddenFeeds")
   const timestamp = get24HoursAgoTimestamp()
 
   const baseParams = {
@@ -177,7 +176,6 @@ const fetchTodayEntries = async (status, filterParams, applyDateFilter) => {
   }
 
   const extraParams = {
-    globally_visible: !showHiddenFeeds,
     published_after: timestamp,
     ...filterParams,
   }
@@ -258,8 +256,6 @@ export const getCategoryEntries = async (
 ) => {
   const orderBy = getSettings("orderBy")
   const pageSize = getSettings("pageSize")
-  const showHiddenFeeds = getSettings("showHiddenFeeds")
-
   const baseParams = {
     baseUrl: `/v1/categories/${categoryId}/entries`,
     orderField: orderBy,
@@ -267,10 +263,7 @@ export const getCategoryEntries = async (
     status,
   }
 
-  const extraParams = {
-    globally_visible: !showHiddenFeeds,
-    ...filterParams,
-  }
+  const extraParams = { ...filterParams }
 
   if (starred) {
     extraParams.starred = starred

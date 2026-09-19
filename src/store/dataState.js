@@ -88,7 +88,7 @@ export const categoriesState = computed(
   },
 )
 
-const hiddenCategoryIdSetState = computed(catalogCategoriesState, (categories) => {
+const globallyHiddenCategoryIdSetState = computed(catalogCategoriesState, (categories) => {
   const hiddenCategoryIdSet = new Set()
 
   for (const category of categories) {
@@ -100,8 +100,8 @@ const hiddenCategoryIdSetState = computed(catalogCategoriesState, (categories) =
   return hiddenCategoryIdSet
 })
 
-const hiddenFeedIdSetState = computed(
-  [catalogFeedsState, hiddenCategoryIdSetState],
+const globallyHiddenFeedIdSetState = computed(
+  [catalogFeedsState, globallyHiddenCategoryIdSetState],
   (feeds, hiddenCategoryIds) => {
     const hiddenFeedIdSet = new Set()
 
@@ -115,22 +115,10 @@ const hiddenFeedIdSetState = computed(
   },
 )
 
-export const filteredFeedsState = computed(
-  [feedsState, hiddenFeedIdSetState, showHiddenFeedsState],
-  (feeds, hiddenFeedIds, showHiddenFeeds) =>
-    feeds.filter((feed) => showHiddenFeeds || !hiddenFeedIds.has(feed.id)),
-)
-
-export const filteredCategoriesState = computed(
-  [categoriesState, hiddenCategoryIdSetState, showHiddenFeedsState],
-  (categories, hiddenCategoryIds, showHiddenFeeds) =>
-    categories.filter((category) => showHiddenFeeds || !hiddenCategoryIds.has(category.id)),
-)
-
-export const feedsGroupedByIdState = computed(filteredFeedsState, (filteredFeeds) => {
+export const feedsGroupedByIdState = computed(feedsState, (feeds) => {
   const groupedFeeds = {}
 
-  for (const feed of filteredFeeds) {
+  for (const feed of feeds) {
     const { id } = feed.category
 
     if (!groupedFeeds[id]) {
@@ -144,13 +132,12 @@ export const feedsGroupedByIdState = computed(filteredFeedsState, (filteredFeeds
 })
 
 export const unreadTotalState = computed(
-  [unreadInfoState, filteredFeedsState],
-  (unreadInfo, filteredFeeds) => {
-    const filteredFeedIds = new Set(filteredFeeds.map((feed) => feed.id))
+  [unreadInfoState, globallyHiddenFeedIdSetState, showHiddenFeedsState],
+  (unreadInfo, hiddenFeedIds, showHiddenFeeds) => {
     let total = 0
 
     for (const [id, count] of Object.entries(unreadInfo)) {
-      if (filteredFeedIds.has(Number(id))) {
+      if (showHiddenFeeds || !hiddenFeedIds.has(Number(id))) {
         total += count
       }
     }

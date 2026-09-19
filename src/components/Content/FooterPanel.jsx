@@ -21,7 +21,7 @@ import CustomTooltip from "@/components/ui/CustomTooltip"
 import useAppData from "@/hooks/useAppData"
 import { polyglotState } from "@/hooks/useLanguage"
 import { contentState, setActiveContent, setEntries } from "@/store/contentState"
-import { filteredCategoriesState, filteredFeedsState } from "@/store/dataState"
+import { categoriesState, feedsState } from "@/store/dataState"
 import { settingsState, updateSettings } from "@/store/settingsState"
 import findAdjacentItem from "@/utils/navigation"
 import "./FooterPanel.css"
@@ -92,18 +92,16 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
     keys: ["markAllReadJumpToNext", "showStatus"],
   })
   const { polyglot } = useStore(polyglotState)
-  const filteredCategories = useStore(filteredCategoriesState)
-  const filteredFeeds = useStore(filteredFeedsState)
+  const categories = useStore(categoriesState)
+  const feeds = useStore(feedsState)
   const { refreshCounts } = useAppData()
   const navigate = useNavigate()
   const refreshLabel = polyglot.t("article_list.refresh_tooltip")
 
   const jumpToNext = () => {
     if (source === "category") {
-      const currentIndex = filteredCategories.findIndex(
-        (category) => category.id === Number(sourceId),
-      )
-      const next = findAdjacentItem(filteredCategories, currentIndex, "next", {
+      const currentIndex = categories.findIndex((category) => category.id === Number(sourceId))
+      const next = findAdjacentItem(categories, currentIndex, "next", {
         predicate: (category) => category.unreadCount > 0,
         wrap: true,
       })
@@ -111,8 +109,8 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
         navigate(`/category/${next.id}`)
       }
     } else if (source === "feed") {
-      const orderedFeeds = filteredCategories.flatMap((cat) =>
-        filteredFeeds.filter((f) => f.category.id === cat.id),
+      const orderedFeeds = categories.flatMap((cat) =>
+        feeds.filter((f) => f.category.id === cat.id),
       )
       const currentIndex = orderedFeeds.findIndex((feed) => feed.id === Number(sourceId))
       const next = findAdjacentItem(orderedFeeds, currentIndex, "next", {

@@ -59,9 +59,9 @@ import {
   setEntries,
 } from "@/store/contentState"
 import {
+  categoriesState,
   dataState,
   feedsGroupedByIdState,
-  filteredCategoriesState,
   setUnreadInfo,
   unreadTotalState,
 } from "@/store/dataState"
@@ -477,12 +477,12 @@ const CategoryGroup = ({
 }) => {
   const { showUnreadFeedsOnly } = useStore(settingsState, { keys: ["showUnreadFeedsOnly"] })
   const feedsGroupedById = useStore(feedsGroupedByIdState)
-  const filteredCategories = useStore(filteredCategoriesState)
+  const categories = useStore(categoriesState)
 
   const location = useLocation()
   const currentPath = location.pathname
 
-  return filteredCategories
+  return categories
     .filter((category) => {
       const feedsInCategory = feedsGroupedById[category.id]
 
@@ -611,8 +611,8 @@ const MoreOptionsDropdown = () => {
                 <IconEye className="icon-right" />
               )}
               {showHiddenFeeds
-                ? polyglot.t("sidebar.hide_hidden_feeds")
-                : polyglot.t("sidebar.show_hidden_feeds")}
+                ? polyglot.t("sidebar.hide_globally_hidden_entries")
+                : polyglot.t("sidebar.show_globally_hidden_entries")}
             </MenuItem>
             <MenuItem key="2" onClick={handleToggleUnreadFeedsOnly}>
               {showUnreadFeedsOnly ? (
