@@ -43,6 +43,18 @@ export const articleHeadingsState = selectStore(activeContentState, (activeConte
 
 export const filteredEntriesState = computed(contentState, (content) => content.entries)
 
+// Select unread entries on one strict side of an anchor in the displayed list.
+export const getUnreadEntriesInDirection = (entries, anchorEntryId, direction) => {
+  const anchorIndex = entries.findIndex((entry) => entry.id === anchorEntryId)
+  if (anchorIndex === -1) {
+    return []
+  }
+
+  const range =
+    direction === "above" ? entries.slice(0, anchorIndex) : entries.slice(anchorIndex + 1)
+  return range.filter((entry) => entry.status === "unread")
+}
+
 export const dynamicCountState = computed(
   [contentState, dataState, unreadTotalState, settingsState, feedsState],
   (content, data, unreadTotal, settings, feeds) => {

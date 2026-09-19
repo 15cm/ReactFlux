@@ -123,6 +123,8 @@
     "next_tooltip": "下一篇文章",
     "mark_as_read_tooltip": "标记为已读",
     "mark_as_unread_tooltip": "标记为未读",
+    "mark_all_above_as_read_tooltip": "将上方文章全部标为已读",
+    "mark_all_below_as_read_tooltip": "将下方文章全部标为已读",
     "open_link_externally_tooltip": "在新标签页中打开源链接",
     "open_in_reactflux_tooltip": "在 ReactFlux 中打开",
     "invalid_source_link_fallback": "源链接无效，已改为在 ReactFlux 中打开。",

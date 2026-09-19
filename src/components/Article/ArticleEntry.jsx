@@ -1,5 +1,7 @@
 import { Divider, Dropdown, Menu } from "@arco-design/web-react/es"
 import {
+  IconArrowDown,
+  IconArrowUp,
   IconBook,
   IconLaunch,
   IconMinusCircle,
@@ -15,7 +17,11 @@ import { memo, useLayoutEffect, useMemo, useRef } from "react"
 import useEntryActions from "@/hooks/useEntryActions"
 import { polyglotState } from "@/hooks/useLanguage"
 import useLongPressContextMenu from "@/hooks/useLongPressContextMenu"
-import { contentState, createEntrySelectedState } from "@/store/contentState"
+import {
+  contentState,
+  createEntrySelectedState,
+  getUnreadEntriesInDirection,
+} from "@/store/contentState"
 import { hasIntegrationsState } from "@/store/dataState"
 import { articleEntryInteractionSettingsState } from "@/store/settingsState"
 
@@ -50,7 +56,7 @@ const extractTextFromHtml = (html) => {
 
 const ArticleEntry = ({ articleActivation, entry, layout, observeRead, presenter: Presenter }) => {
   const { enableContextMenu, markReadOnScroll } = useStore(articleEntryInteractionSettingsState)
-  const { infoFrom } = useStore(contentState, { keys: ["infoFrom"] })
+  const { entries, infoFrom } = useStore(contentState, { keys: ["entries", "infoFrom"] })
   const hasIntegrations = useStore(hasIntegrationsState)
   const { polyglot } = useStore(polyglotState)
   const selectedState = useMemo(() => createEntrySelectedState(entry.id), [entry.id])
@@ -63,6 +69,7 @@ const ArticleEntry = ({ articleActivation, entry, layout, observeRead, presenter
     handleToggleStarred,
     handleToggleStatus,
     handleOpenLinkExternally,
+    handleMarkAdjacentEntriesAsRead,
   } = useEntryActions()
   const { dropdownProps, longPressProps } = useLongPressContextMenu({
     disabled: !enableContextMenu,
@@ -96,6 +103,8 @@ const ArticleEntry = ({ articleActivation, entry, layout, observeRead, presenter
         label: polyglot.t("article_card.open_link_externally_tooltip"),
         onClick: () => handleOpenLinkExternally(entry),
       }
+  const unreadAbove = getUnreadEntriesInDirection(entries, entry.id, "above")
+  const unreadBelow = getUnreadEntriesInDirection(entries, entry.id, "below")
 
   return (
     <Dropdown
@@ -128,6 +137,30 @@ const ArticleEntry = ({ articleActivation, entry, layout, observeRead, presenter
               )}
             </div>
           </Menu.Item>
+
+          <Menu.Item
+            key="mark-all-above-as-read"
+            disabled={unreadAbove.length === 0}
+            onClick={() => handleMarkAdjacentEntriesAsRead(entry, "above")}
+          >
+            <div className="settings-menu-item">
+              <span>{polyglot.t("article_card.mark_all_above_as_read_tooltip")}</span>
+              <IconArrowUp aria-hidden="true" />
+            </div>
+          </Menu.Item>
+
+          <Menu.Item
+            key="mark-all-below-as-read"
+            disabled={unreadBelow.length === 0}
+            onClick={() => handleMarkAdjacentEntriesAsRead(entry, "below")}
+          >
+            <div className="settings-menu-item">
+              <span>{polyglot.t("article_card.mark_all_below_as_read_tooltip")}</span>
+              <IconArrowDown aria-hidden="true" />
+            </div>
+          </Menu.Item>
+
+          <Divider style={{ margin: "4px 0" }} />
 
           <Menu.Item key="toggle-starred" onClick={() => handleToggleStarred(entry)}>
             <div className="settings-menu-item">

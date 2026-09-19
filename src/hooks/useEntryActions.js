@@ -9,7 +9,12 @@ import {
   updateEntriesStatus,
 } from "@/apis"
 import { polyglotState } from "@/hooks/useLanguage"
-import { contentState, setActiveContent, setEntries } from "@/store/contentState"
+import {
+  contentState,
+  getUnreadEntriesInDirection,
+  setActiveContent,
+  setEntries,
+} from "@/store/contentState"
 import {
   setHistoryCount,
   setStarredCount,
@@ -424,6 +429,17 @@ const useEntryActions = () => {
     })
   }
 
+  const handleMarkAdjacentEntriesAsRead = (entry, direction) => {
+    const entries = getUnreadEntriesInDirection(contentState.get().entries, entry.id, direction)
+    if (entries.length === 0) {
+      return
+    }
+
+    void updateEntriesStatusOptimistically(entries, "read", () => {
+      Message.error(polyglot.t("actions.mark_as_read_error"))
+    })
+  }
+
   const handleToggleStarred = (entry) => {
     const newStarred = !entry.starred
     updateEntryStarredOptimistically(entry, newStarred, () => {
@@ -486,6 +502,7 @@ const useEntryActions = () => {
   return {
     handleFetchContent,
     handleOpenLinkExternally,
+    handleMarkAdjacentEntriesAsRead,
     handleSaveToThirdPartyServices,
     handleToggleStarred,
     handleToggleStatus,

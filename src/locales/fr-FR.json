@@ -123,6 +123,8 @@
     "next_tooltip": "Article suivant",
     "mark_as_read_tooltip": "Marquer comme lu",
     "mark_as_unread_tooltip": "Démarquer comme lu",
+    "mark_all_above_as_read_tooltip": "Marquer comme lus tous ceux au-dessus",
+    "mark_all_below_as_read_tooltip": "Marquer comme lus tous ceux en dessous",
     "open_link_externally_tooltip": "Ouvrir le lien source dans un nouvel onglet",
     "open_in_reactflux_tooltip": "Ouvrir dans ReactFlux",
     "invalid_source_link_fallback": "Le lien source n’est pas valide. L’article sera ouvert dans ReactFlux.",

@@ -123,6 +123,8 @@
     "next_tooltip": "次の記事",
     "mark_as_read_tooltip": "既読にする",
     "mark_as_unread_tooltip": "未読にする",
+    "mark_all_above_as_read_tooltip": "上の記事をすべて既読にする",
+    "mark_all_below_as_read_tooltip": "下の記事をすべて既読にする",
     "open_link_externally_tooltip": "配信元リンクを新しいタブで開く",
     "open_in_reactflux_tooltip": "ReactFlux で開く",
     "invalid_source_link_fallback": "この記事の配信元リンクは無効です。代わりに ReactFlux で開きます。",
